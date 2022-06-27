@@ -6,31 +6,35 @@ SANITIZE = -fsanitize=address -g3
 VALGRIND = valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes
 SRC_DIR = srcs/
 OBJ_DIR = objs/
-INCLUDES = includes/
-LIBRARIES_DIR = libraries/
+LIBRARIE = ft_printf/libftprintf.a
 
-LIBRARIES_FILES = libft
+INCLUDE = ft_printf/includes/
+
 SRC_FILES = client server
-
 SRC			=	$(addprefix $(SRC_DIR)), $(addsuffix .c, $(SRC_FILES))
-
-LIBRARIES	=	$(addprefix $(LIBRARIES_DIR), $(addsuffix .a, $(LIBRARIES_FILES)))
 
 all : $(NAME)
 
-
-
 $(NAME):
-	@mkdir -p libraries
-	@make -C libft
-
+	@make -C ft_printf
+	@mkdir -p server
 server: $(NAME)
-	$(CC) $(CC_FLAGS) $(SRC_DIR)server.c $(LIBRARIES_DIR)libft.a -I $(INCLUDES) -o server.exec
+	@$(CC) $(CC_FLAGS) $(SRC_DIR)server.c $(LIBRARIE) -I $(INCLUDE) -o server/server.exec
+	@echo "server compiled"
 
 client: $(NAME)
-	$(CC) $(CC_FLAGS) $(SRC_DIR)client.c -I $(INCLUDES) $(LIBRARIES) -o client.exec
+	@$(CC) $(CC_FLAGS) $(SRC_DIR)client.c $(LIBRARIE) -I $(INCLUDE) -o server/client.exec
+	@echo "client compiled"
+
+start: client server
+	@clear
+	@./server/server.exec
 
 clean:
-
+	@make clean -C ft_printf
+	@rm -rf server
 fclean:
-	@rm -rf $(LIBRARIES_DIR)
+	@make fclean -C ft_printf
+	@rm -rf server
+
+re: fclean all

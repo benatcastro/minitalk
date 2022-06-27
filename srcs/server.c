@@ -6,13 +6,13 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:43:47 by bena              #+#    #+#             */
-/*   Updated: 2022/06/27 23:40:00 by bena             ###   ########.fr       */
+/*   Updated: 2022/06/27 23:55:03 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <unistd.h>
-#include "libft.h"
+#include "ft_printf.h"
 
 int main (int argc, char *argv[])
 {

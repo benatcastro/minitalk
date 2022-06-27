@@ -6,12 +6,17 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:30:26 by bena              #+#    #+#             */
-/*   Updated: 2022/06/27 23:42:18 by bena             ###   ########.fr       */
+/*   Updated: 2022/06/28 00:14:18 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "ft_printf.h"
 
 int main(int argc, char	*argv[])
 {
  (void)argc;
- (void)argv;
+	int pid;
+
+	pid = ft_atoi(argc[1]);
+
 }
