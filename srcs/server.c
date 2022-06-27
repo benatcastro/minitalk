@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:43:47 by bena              #+#    #+#             */
-/*   Updated: 2022/06/27 23:55:03 by bena             ###   ########.fr       */
+/*   Updated: 2022/06/28 01:11:33 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,8 @@
 #include <unistd.h>
 #include "ft_printf.h"
 
-int main (int argc, char *argv[])
+int main ()
 {
-	(void)argc;
-	(void)argv;
 	ft_printf("SERVER PID: %d\n", getpid);
 	return 0;
 }

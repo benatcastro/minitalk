@@ -26,7 +26,7 @@ client: $(NAME)
 	@$(CC) $(CC_FLAGS) $(SRC_DIR)client.c $(LIBRARIE) -I $(INCLUDE) -o server/client.exec
 	@echo "client compiled"
 
-start: client server
+start: re client server
 	@clear
 	@./server/server.exec
 
