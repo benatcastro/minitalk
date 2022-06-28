@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:30:26 by bena              #+#    #+#             */
-/*   Updated: 2022/06/28 22:51:27 by bena             ###   ########.fr       */
+/*   Updated: 2022/06/28 22:56:42 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ static pid_t ft_check_args(char *pid, int argc, char *argv[])
 	}
 	else if (argc != 3 || !ft_strlen(argv[2]))
 	{
-		ft_printf("Please enter the PID of the process and the string to send.\n");
+		ft_printf(
+			"Please enter the PID of the process and the string to send.\n");
 		exit (1);
 	}
 	i = 0;

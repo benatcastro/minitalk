@@ -19,11 +19,11 @@ $(NAME):
 	@make -C ft_printf
 	@mkdir -p server
 server: $(NAME)
-	@$(CC) $(CC_FLAGS) $(SRC_DIR)server.c $(LIBRARIE) -I $(INCLUDE) -o server/server.exec
+	@$(CC) $(CC_FLAGS) $(SRC_DIR)server.c $(LIBRARIE) -I $(INCLUDE) -o server/server
 	@echo "server compiled"
 
 client: $(NAME)
-	@$(CC) $(CC_FLAGS) $(SRC_DIR)client.c $(LIBRARIE) -I $(INCLUDE) -o server/client.exec
+	@$(CC) $(CC_FLAGS) $(SRC_DIR)client.c $(LIBRARIE) -I $(INCLUDE) -o server/client
 	@echo "client compiled"
 
 start: client server

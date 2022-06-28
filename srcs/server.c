@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:43:47 by bena              #+#    #+#             */
-/*   Updated: 2022/06/28 22:53:03 by bena             ###   ########.fr       */
+/*   Updated: 2022/06/28 23:03:37 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@
 void	signal_handler(int signum, siginfo_t *siginfo, void *ucontext)
 {
 	if (siginfo->si_int == -1)
-		ft_printf("Finished");
+		ft_printf("\nFinished");
 	else
-		ft_printf("Value: %d\n", siginfo->si_int);
+		ft_printf("%d", siginfo->si_int);
 }
 
 int	main(int argc, char **argv)
