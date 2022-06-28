@@ -17,25 +17,25 @@ all : $(NAME)
 
 $(NAME):
 	@make -C ft_printf
-	@mkdir -p server
+	@mkdir -p execs
 server: $(NAME)
-	@$(CC) $(CC_FLAGS) $(SRC_DIR)server.c $(LIBRARIE) -I $(INCLUDE) -o server/server
+	@$(CC) $(CC_FLAGS) $(SRC_DIR)server.c $(LIBRARIE) -I $(INCLUDE) -o execs/server
 	@echo "server compiled"
 
 client: $(NAME)
-	@$(CC) $(CC_FLAGS) $(SRC_DIR)client.c $(LIBRARIE) -I $(INCLUDE) -o server/client
+	@$(CC) $(CC_FLAGS) $(SRC_DIR)client.c $(LIBRARIE) -I $(INCLUDE) -o execs/client
 	@echo "client compiled"
 
 start: client server
 	@clear
-	@./server/server.exec &
-	@cd server/
+	@./execs/server &
+	@cd execs/
 
 clean:
 	@make clean -C ft_printf
-	@rm -rf server
+	@rm -rf execs
 fclean:
 	@make fclean -C ft_printf
-	@rm -rf server
+	@rm -rf execs
 
 re: fclean all
