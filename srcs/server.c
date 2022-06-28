@@ -6,26 +6,26 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:43:47 by bena              #+#    #+#             */
-/*   Updated: 2022/06/28 04:40:30 by bena             ###   ########.fr       */
+/*   Updated: 2022/06/28 22:53:03 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <sys/types.h>
-# include <unistd.h>
-# include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <signal.h>
+#include "ft_printf.h"
 
-void signal_handler(int signum, siginfo_t *siginfo, void *ucontext)
+void	signal_handler(int signum, siginfo_t *siginfo, void *ucontext)
 {
-	//if (signum != SIGUSR1) return;
-	//if (siginfo->si_code != SI_QUEUE) return;
-
-	printf("receiver: Got value %c\n",
-		siginfo->si_int);
+	if (siginfo->si_int == -1)
+		ft_printf("Finished");
+	else
+		ft_printf("Value: %d\n", siginfo->si_int);
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
 	pid_t	server_pid;
 	struct sigaction signal_action;

@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:30:26 by bena              #+#    #+#             */
-/*   Updated: 2022/06/28 04:53:41 by bena             ###   ########.fr       */
+/*   Updated: 2022/06/28 22:51:27 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,29 +39,29 @@ static pid_t ft_check_args(char *pid, int argc, char *argv[])
 		return ((pid_t)ft_atoi(pid));
 }
 
-static	void ft_send_string (pid_t pid, char *s)
+static void	ft_send_char(pid_t pid, char c)
 {
 	union sigval	sv;
 	int				i;
 
-	i = 0;
-	while(s[i])
+	i = 8;
+	while (i--)
 	{
-		printf("test");
-		sv.sival_int = s[i];
+		sv.sival_int = (c >> i & 1);
 		sigqueue(pid, SIGUSR1, sv);
-		i++;
+		usleep(100);
 	}
+	sv.sival_int = -1;
+	sigqueue(pid, SIGUSR1, sv);
+	usleep(100);
 }
 
-int main(int argc, char	*argv[])
+int	main(int argc, char	*argv[])
 {
 	pid_t	pid;
-	union	sigval	sv;
-
 
 	pid = ft_check_args(argv[1], argc, argv);
-	ft_send_string(pid, argv[2]);
+	ft_send_char(pid, argv[2][0]);
 	//sv.sival_int = ft_atoi(argv[2]);
 	//sigqueue(pid, SIGUSR1, sv);
 }
