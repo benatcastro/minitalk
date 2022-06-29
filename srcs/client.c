@@ -6,14 +6,14 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:30:26 by bena              #+#    #+#             */
-/*   Updated: 2022/06/29 01:44:39 by bena             ###   ########.fr       */
+/*   Updated: 2022/06/29 18:43:03 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include "signal.h"
 
-static pid_t ft_check_args(char *pid, int argc, char *argv[])
+static pid_t	ft_check_args(char *pid, int argc, char *argv[])
 {
 	int	i;
 

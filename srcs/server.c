@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:43:47 by bena              #+#    #+#             */
-/*   Updated: 2022/06/29 18:26:18 by bena             ###   ########.fr       */
+/*   Updated: 2022/06/29 18:42:12 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,17 @@ void	showbits(unsigned char x )
 	}
 	printf("\n");
 }
-static void ft_print_byte()
+static void ft_send_confirmation()
 {
 
 }
-static void	ft_signal_handler(int signum, siginfo_t *data, void *ucontext)
-{
-	char		c;
-	static int	i;
 
-	(void)signum;
-	(void)ucontext;
-	if (data->si_int == -1)
+static void	ft_print_byte(int data)
+{
+	static int	i;
+	char		c;
+
+	if (data == -1)
 	{
 		//ft_printf("\n");
 		//showbits(c);
@@ -51,13 +50,21 @@ static void	ft_signal_handler(int signum, siginfo_t *data, void *ucontext)
 	}
 	else
 	{
-		if (data->si_int == 1)
+		if (data == 1)
 			c |= (1 << (7 - i));
-		else if (data->si_int == 0)
+		else if (data == 0)
 			c |= (0 << (7 - i));
 		i++;
 		//ft_printf("%d", data->si_int);
 	}
+}
+
+static void	ft_signal_handler(int signal, siginfo_t *data, void *ucontext)
+{
+
+	(void)ucontext;
+	if (signal == SIGUSR1)
+		ft_print_byte(data->si_int);
 }
 
 int	main(void)
