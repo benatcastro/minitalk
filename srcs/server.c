@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:43:47 by bena              #+#    #+#             */
-/*   Updated: 2022/06/28 23:11:21 by bena             ###   ########.fr       */
+/*   Updated: 2022/06/29 18:26:18 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,50 @@
 #include <signal.h>
 #include "ft_printf.h"
 
-void	signal_handler(int signum, siginfo_t *siginfo, void *ucontext)
+
+void	showbits(unsigned char x )
 {
-	if (siginfo->si_int == -1)
-		ft_printf("\nFinished");
+	int	i;
+
+	i = 0;
+	for (i = (sizeof(char) * 8) - 1; i >= 0; i--)
+	{
+		putchar(x & (1u << i) ? '1' : '0');
+	}
+	printf("\n");
+}
+static void ft_print_byte()
+{
+
+}
+static void	ft_signal_handler(int signum, siginfo_t *data, void *ucontext)
+{
+	char		c;
+	static int	i;
+
+	(void)signum;
+	(void)ucontext;
+	if (data->si_int == -1)
+	{
+		//ft_printf("\n");
+		//showbits(c);
+		ft_printf("%c", c);
+		c <<= 8;
+		i = 0;
+		//ft_printf("\nFinished");
+	}
 	else
-		ft_printf("%d", siginfo->si_int);
+	{
+		if (data->si_int == 1)
+			c |= (1 << (7 - i));
+		else if (data->si_int == 0)
+			c |= (0 << (7 - i));
+		i++;
+		//ft_printf("%d", data->si_int);
+	}
 }
 
-int	main(int argc, char **argv)
+int	main(void)
 {
 	pid_t				server_pid;
 	struct sigaction	signal_action;
@@ -33,7 +68,7 @@ int	main(int argc, char **argv)
 	server_pid = getpid();
 	printf("SERVER PID: %d\n", server_pid);
 
-	signal_action.sa_sigaction = signal_handler;
+	signal_action.sa_sigaction = ft_signal_handler;
 	sigemptyset (&signal_action.sa_mask);
 	signal_action.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &signal_action, NULL);

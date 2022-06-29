@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:30:26 by bena              #+#    #+#             */
-/*   Updated: 2022/06/28 22:56:42 by bena             ###   ########.fr       */
+/*   Updated: 2022/06/29 01:44:39 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,12 @@ static void	ft_send_char(pid_t pid, char c)
 int	main(int argc, char	*argv[])
 {
 	pid_t	pid;
+	int		i;
 
+	i = -1;
 	pid = ft_check_args(argv[1], argc, argv);
-	ft_send_char(pid, argv[2][0]);
+	while (argv[2][++i])
+		ft_send_char(pid, argv[2][i]);
 	//sv.sival_int = ft_atoi(argv[2]);
 	//sigqueue(pid, SIGUSR1, sv);
 }
