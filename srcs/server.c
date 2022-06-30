@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:43:47 by bena              #+#    #+#             */
-/*   Updated: 2022/06/29 18:42:12 by bena             ###   ########.fr       */
+/*   Updated: 2022/06/30 15:01:08 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,14 @@ static void	ft_signal_handler(int signal, siginfo_t *data, void *ucontext)
 
 	(void)ucontext;
 	if (signal == SIGUSR1)
-		ft_print_byte(data->si_int);
+	{
+		if (data->si_int == 2)
+			ft_printf("[SERVER]Recieving from (%d):[", data->si_pid);
+		else if (data->si_int == 3)
+			ft_printf("]\n");
+		else
+			ft_print_byte(data->si_int);
+	}
 }
 
 int	main(void)

@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:30:26 by bena              #+#    #+#             */
-/*   Updated: 2022/06/29 18:43:03 by bena             ###   ########.fr       */
+/*   Updated: 2022/06/30 14:52:56 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,21 +40,53 @@ static pid_t	ft_check_args(char *pid, int argc, char *argv[])
 		return ((pid_t)ft_atoi(pid));
 }
 
+/*Converts the char into bits and send them to indicated PID
+Codes:
+-1 indicates that the octet of bytes is finished*/
 static void	ft_send_char(pid_t pid, char c)
 {
-	union sigval	sv;
+	union sigval	bit;
 	int				i;
 
 	i = 8;
 	while (i--)
 	{
-		sv.sival_int = (c >> i & 1);
-		sigqueue(pid, SIGUSR1, sv);
+		bit.sival_int = (c >> i & 1);
+		sigqueue(pid, SIGUSR1, bit);
 		usleep(100);
 	}
-	sv.sival_int = -1;
-	sigqueue(pid, SIGUSR1, sv);
+	bit.sival_int = -1;
+	sigqueue(pid, SIGUSR1, bit);
 	usleep(100);
+}
+
+/*Send the entire string to the designed PID
+CODES:
+2: Indicates the start of a new string transmission
+3: Indicates the end of the of string transmission*/
+
+static void	ft_send_string(pid_t pid, char *str)
+{
+	union sigval	code;
+	int				i;
+
+	i = -1;
+
+	code.sival_int = 2;
+	sigqueue(pid, SIGUSR1, code);
+	usleep(100);
+	while (str[++i])
+		ft_send_char(pid, str[i]);
+	code.sival_int = 3;
+	sigqueue(pid, SIGUSR1, code);
+	usleep(100);
+
+}
+
+static void	ft_signal_handler(int signal)
+{
+	if (signal == SIGUSR2)
+		ft_printf("[CLIENT] Server recieved the package");
 }
 
 int	main(int argc, char	*argv[])
@@ -64,8 +96,6 @@ int	main(int argc, char	*argv[])
 
 	i = -1;
 	pid = ft_check_args(argv[1], argc, argv);
-	while (argv[2][++i])
-		ft_send_char(pid, argv[2][i]);
-	//sv.sival_int = ft_atoi(argv[2]);
-	//sigqueue(pid, SIGUSR1, sv);
+	ft_send_string(pid, argv[2]);
+	signal(SIGUSR2, ft_signal_handler);
 }
