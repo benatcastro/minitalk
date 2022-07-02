@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:30:26 by bena              #+#    #+#             */
-/*   Updated: 2022/06/30 14:52:56 by bena             ###   ########.fr       */
+/*   Updated: 2022/07/02 03:03:56 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,21 +43,21 @@ static pid_t	ft_check_args(char *pid, int argc, char *argv[])
 /*Converts the char into bits and send them to indicated PID
 Codes:
 -1 indicates that the octet of bytes is finished*/
-static void	ft_send_char(pid_t pid, char c)
+static void	ft_send(pid_t pid, int8_t data)
 {
-	union sigval	bit;
+	int				bit;
 	int				i;
 
 	i = 8;
 	while (i--)
 	{
-		bit.sival_int = (c >> i & 1);
-		sigqueue(pid, SIGUSR1, bit);
+		bit = (data >> i & 1);
+		if (bit == 0)
+			kill(pid, SIGUSR1);
+		else if (bit == 1)
+			kill(pid, SIGUSR2);
 		usleep(100);
 	}
-	bit.sival_int = -1;
-	sigqueue(pid, SIGUSR1, bit);
-	usleep(100);
 }
 
 /*Send the entire string to the designed PID
@@ -71,16 +71,9 @@ static void	ft_send_string(pid_t pid, char *str)
 	int				i;
 
 	i = -1;
-
-	code.sival_int = 2;
-	sigqueue(pid, SIGUSR1, code);
 	usleep(100);
 	while (str[++i])
-		ft_send_char(pid, str[i]);
-	code.sival_int = 3;
-	sigqueue(pid, SIGUSR1, code);
-	usleep(100);
-
+		ft_send(pid, str[i]);
 }
 
 static void	ft_signal_handler(int signal)

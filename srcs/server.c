@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:43:47 by bena              #+#    #+#             */
-/*   Updated: 2022/06/30 15:01:08 by bena             ###   ########.fr       */
+/*   Updated: 2022/07/02 03:15:56 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,26 +37,26 @@ static void ft_send_confirmation()
 static void	ft_print_byte(int data)
 {
 	static int	i;
-	char		c;
+	int8_t		c;
 
-	if (data == -1)
-	{
-		//ft_printf("\n");
-		//showbits(c);
-		ft_printf("%c", c);
-		c <<= 8;
-		i = 0;
-		//ft_printf("\nFinished");
-	}
-	else
+	if (i < 8)
 	{
 		if (data == 1)
 			c |= (1 << (7 - i));
 		else if (data == 0)
 			c |= (0 << (7 - i));
 		i++;
-		//ft_printf("%d", data->si_int);
 	}
+	if (i == 8)
+	{
+		//ft_printf("\n");
+		//showbits(c);
+		ft_printf("CHAR: %c\n", c);
+		c <<= 8;
+		i = 0;
+		//ft_printf("\nFinished");
+	}
+		//ft_printf("test %d\n", i);
 }
 
 static void	ft_signal_handler(int signal, siginfo_t *data, void *ucontext)
@@ -65,12 +65,13 @@ static void	ft_signal_handler(int signal, siginfo_t *data, void *ucontext)
 	(void)ucontext;
 	if (signal == SIGUSR1)
 	{
-		if (data->si_int == 2)
-			ft_printf("[SERVER]Recieving from (%d):[", data->si_pid);
-		else if (data->si_int == 3)
-			ft_printf("]\n");
-		else
-			ft_print_byte(data->si_int);
+		//ft_printf("[SERVER]Recieved bit: (0)\n");
+		ft_print_byte(0);
+	}
+	else if (signal == SIGUSR2)
+	{
+		//ft_printf("[SERVER]Recieved bit: (1)\n");
+		ft_print_byte(1);
 	}
 }
 
@@ -86,6 +87,7 @@ int	main(void)
 	sigemptyset (&signal_action.sa_mask);
 	signal_action.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &signal_action, NULL);
+	sigaction(SIGUSR2, &signal_action, NULL);
 
 	while (1)
 		sleep(100);
