@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:43:47 by bena              #+#    #+#             */
-/*   Updated: 2022/07/04 16:08:41 by bena             ###   ########.fr       */
+/*   Updated: 2022/07/04 16:26:15 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,14 @@ static unsigned char	*ft_append_char(unsigned char *str, char c)
 	len = -1;
 	while (str[++len])
 		continue ;
-
+	ft_printf("APPEND (%c)", c);
 	result = malloc(len + 2);
 	ft_ustrlcpy(result, str, len);
+	ft_printf("RESULT %s\n", result);
 	free(str);
-	ft_printf("Append result: (%s)\n", result);
 	result[len + 1] = c;
 	result[len + 2] = '\0';
+	//ft_printf("Append result: (%s)\n", result);
 	return (result);
 }
 
