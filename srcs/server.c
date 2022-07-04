@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:43:47 by bena              #+#    #+#             */
-/*   Updated: 2022/07/02 03:15:56 by bena             ###   ########.fr       */
+/*   Updated: 2022/07/04 11:03:51 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include <unistd.h>
 #include <signal.h>
 #include "ft_printf.h"
-
 
 void	showbits(unsigned char x )
 {
@@ -29,65 +28,65 @@ void	showbits(unsigned char x )
 	}
 	printf("\n");
 }
-static void ft_send_confirmation()
+
+static int ft_byte_compare(int octet1, int octet2)
 {
+	int	i;
+	int	bit1;
+	int bit2;
 
-}
-
-static void	ft_print_byte(int data)
-{
-	static int	i;
-	int8_t		c;
-
-	if (i < 8)
+	i = 8;
+	while (i--)
 	{
-		if (data == 1)
-			c |= (1 << (7 - i));
-		else if (data == 0)
-			c |= (0 << (7 - i));
-		i++;
+		bit1 = (octet1 >> i & 1);
+		bit2 = (octet2 >> i & 1);
+		if (bit1 != bit2)
+			return (0);
 	}
-	if (i == 8)
-	{
-		//ft_printf("\n");
-		//showbits(c);
-		ft_printf("CHAR: %c\n", c);
-		c <<= 8;
-		i = 0;
-		//ft_printf("\nFinished");
-	}
-		//ft_printf("test %d\n", i);
+	return (1);
 }
 
 static void	ft_signal_handler(int signal, siginfo_t *data, void *ucontext)
 {
+	static int			i;
+	static unsigned		c;
+	static pid_t		sender_pid;
 
+	if (!sender_pid)
+		sender_pid = data->si_pid;
 	(void)ucontext;
-	if (signal == SIGUSR1)
+	c |= (signal == SIGUSR2);
+	if (++i == 8)
 	{
-		//ft_printf("[SERVER]Recieved bit: (0)\n");
-		ft_print_byte(0);
+		i = 0;
+		if (!c)
+		{
+			//kill(sender_pid, SIGUSR1);
+			sender_pid = 0;
+			return ;
+		}
+		//showbits(c);
+		ft_printf("%c", (unsigned char)c);
+		c = 0;
+		//kill(sender_pid, SIGUSR2);
 	}
-	else if (signal == SIGUSR2)
-	{
-		//ft_printf("[SERVER]Recieved bit: (1)\n");
-		ft_print_byte(1);
-	}
+	else
+		c <<= 1;
 }
 
 int	main(void)
 {
 	pid_t				server_pid;
-	struct sigaction	signal_action;
+	struct sigaction	s_action;
 
 	server_pid = getpid();
-	printf("SERVER PID: %d\n", server_pid);
+	ft_printf("SERVER PID: %d\n", server_pid);
 
-	signal_action.sa_sigaction = ft_signal_handler;
-	sigemptyset (&signal_action.sa_mask);
-	signal_action.sa_flags = SA_SIGINFO;
-	sigaction(SIGUSR1, &signal_action, NULL);
-	sigaction(SIGUSR2, &signal_action, NULL);
+	s_action.sa_sigaction = ft_signal_handler;
+	sigemptyset (&s_action.sa_mask);
+	s_action.sa_flags = SA_SIGINFO;
+	sigaction(SIGUSR1, &s_action, NULL);
+	sigaction(SIGUSR2, &s_action, NULL);
 
 	while (1)
 		sleep(100);

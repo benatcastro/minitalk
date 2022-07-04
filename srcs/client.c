@@ -6,12 +6,16 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:30:26 by bena              #+#    #+#             */
-/*   Updated: 2022/07/02 03:03:56 by bena             ###   ########.fr       */
+/*   Updated: 2022/07/04 10:37:43 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <signal.h>
 #include "ft_printf.h"
-#include "signal.h"
 
 static pid_t	ft_check_args(char *pid, int argc, char *argv[])
 {
@@ -43,20 +47,27 @@ static pid_t	ft_check_args(char *pid, int argc, char *argv[])
 /*Converts the char into bits and send them to indicated PID
 Codes:
 -1 indicates that the octet of bytes is finished*/
-static void	ft_send(pid_t pid, int8_t data)
+static void	ft_send(pid_t pid, char data)
 {
-	int				bit;
-	int				i;
+	int					i;
 
 	i = 8;
 	while (i--)
 	{
-		bit = (data >> i & 1);
-		if (bit == 0)
-			kill(pid, SIGUSR1);
-		else if (bit == 1)
+		if (data >> i & 1)
 			kill(pid, SIGUSR2);
+		else
+			kill(pid, SIGUSR1);
 		usleep(100);
+	}
+	if ((int)data == -1)
+	{
+		i = 8;
+		while (i--)
+		{
+			kill(pid, SIGUSR1);
+			usleep(100);
+		}
 	}
 }
 
@@ -67,28 +78,31 @@ CODES:
 
 static void	ft_send_string(pid_t pid, char *str)
 {
-	union sigval	code;
-	int				i;
+	int	i;
 
-	i = -1;
-	usleep(100);
-	while (str[++i])
+	i = 0;
+	while (str[i])
+	{
 		ft_send(pid, str[i]);
+		i++;
+	}
+	ft_send(pid, -1);
 }
 
-static void	ft_signal_handler(int signal)
+static void	ft_signal_handler(int signal, siginfo_t *data, void *ucontext)
 {
-	if (signal == SIGUSR2)
-		ft_printf("[CLIENT] Server recieved the package");
+	(void)ucontext;
+	ft_printf("[CLIENT] Server (%d) recieved the package\n", data->si_pid);
 }
 
 int	main(int argc, char	*argv[])
 {
-	pid_t	pid;
-	int		i;
+	pid_t				pid;
+	int					i;
+	struct sigaction	s_action;
 
 	i = -1;
 	pid = ft_check_args(argv[1], argc, argv);
 	ft_send_string(pid, argv[2]);
-	signal(SIGUSR2, ft_signal_handler);
+	//ft_send(pid, -1);
 }
