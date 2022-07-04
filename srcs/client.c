@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:30:26 by bena              #+#    #+#             */
-/*   Updated: 2022/07/04 10:37:43 by bena             ###   ########.fr       */
+/*   Updated: 2022/07/04 12:33:30 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,15 +60,6 @@ static void	ft_send(pid_t pid, char data)
 			kill(pid, SIGUSR1);
 		usleep(100);
 	}
-	if ((int)data == -1)
-	{
-		i = 8;
-		while (i--)
-		{
-			kill(pid, SIGUSR1);
-			usleep(100);
-		}
-	}
 }
 
 /*Send the entire string to the designed PID
@@ -81,12 +72,13 @@ static void	ft_send_string(pid_t pid, char *str)
 	int	i;
 
 	i = 0;
+	//ft_send(pid, 3);
 	while (str[i])
 	{
 		ft_send(pid, str[i]);
 		i++;
 	}
-	ft_send(pid, -1);
+	ft_send(pid, 2);
 }
 
 static void	ft_signal_handler(int signal, siginfo_t *data, void *ucontext)
@@ -103,6 +95,12 @@ int	main(int argc, char	*argv[])
 
 	i = -1;
 	pid = ft_check_args(argv[1], argc, argv);
+
+	s_action.sa_sigaction = ft_signal_handler;
+	sigemptyset (&s_action.sa_mask);
+	s_action.sa_flags = SA_SIGINFO;
+	sigaction(SIGUSR1, &s_action, NULL);
+	sigaction(SIGUSR2, &s_action, NULL);
+
 	ft_send_string(pid, argv[2]);
-	//ft_send(pid, -1);
 }
