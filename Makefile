@@ -1,7 +1,6 @@
 CC = gcc
 NAME = minitol
-MINILIB_FLAGS = -framework openGL -framework AppKit #-lmlx
-#CC_FLAGS = -Wall -Wextra -Werror
+CC_FLAGS = -Wall -Wextra -Werror
 SANITIZE = -fsanitize=address -g3
 VALGRIND = valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes
 SRC_DIR = srcs/
@@ -25,6 +24,12 @@ server: $(NAME)
 client: $(NAME)
 	@$(CC) $(CC_FLAGS) $(SRC_DIR)client.c $(LIBRARIE) -I $(INCLUDE) -o execs/client
 	@echo "client compiled"
+
+sanitize:
+	@$(CC_FLAGS) += $(SANITIZE)
+
+valgrind:
+	@$(CC_FLAGS) += $(VALGRIND)
 
 start: client server
 	@clear

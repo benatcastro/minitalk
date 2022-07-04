@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:43:47 by bena              #+#    #+#             */
-/*   Updated: 2022/07/04 12:44:17 by bena             ###   ########.fr       */
+/*   Updated: 2022/07/04 14:27:17 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,40 +17,43 @@
 #include <signal.h>
 #include "ft_printf.h"
 
-void	showbits(unsigned char x )
+static unsigned char	*ft_append_char(unsigned char *str, char c)
 {
-	int	i;
+	unsigned char	*result;
+	unsigned int	len;
 
-	i = 0;
-	for (i = (sizeof(unsigned char) * 8) - 1; i >= 0; i--)
-	{
-		putchar(x & (1u << i) ? '1' : '0');
-	}
-	printf("\n");
+	len = -1;
+	while (str[++len])
+		continue ;
+
+	result = malloc(len + 2);
+	ft_ustrlcpy(result, str, len);
+	free(str);
+	ft_printf("Append result: (%s)\n", result);
+	result[len + 1] = c;
+	result[len + 2] = '\0';
+	return (result);
 }
 
-static int	ft_byte_compare(int octet1, int octet2)
+static void	ft_print_message(pid_t pid, unsigned char c)
 {
-	int	i;
-	int	bit1;
-	int	bit2;
+	unsigned char	*message;
 
-	i = 8;
-	while (i--)
-	{
-		bit1 = (octet1 >> i & 1);
-		bit2 = (octet2 >> i & 1);
-		if (bit1 != bit2)
-			return (0);
-	}
-	return (1);
+	message = malloc(0);
+
+	if (c == 2)
+		ft_printf("[SERVER] Recieved message[");
+	else if (c == 3)
+		ft_printf("] from (%d)\n", pid);
+	else
+		ft_append_char(message, c);
+
 }
 
 static void	ft_signal_handler(int signal, siginfo_t *data, void *ucontext)
 {
 	static int				i;
 	static unsigned char	c;
-	pid_t					sender_pid;
 
 	(void)ucontext;
 	c |= (signal == SIGUSR2);
@@ -59,17 +62,14 @@ static void	ft_signal_handler(int signal, siginfo_t *data, void *ucontext)
 	{
 		if (!c)
 		{
-			showbits(c);
 			kill(data->si_pid, SIGUSR2);
 			return ;
 		}
+		ft_print_message(data->si_pid, c);
 		i = 0;
-		ft_printf("%c", c);
 		c = 0;
 		kill(data->si_pid, SIGUSR1);
 	}
-	// else if (ft_byte_compare(c, 2) == 1)
-	// 	ft_printf("]\n");
 	else
 		c <<= 1;
 }
@@ -80,8 +80,7 @@ int	main(void)
 	struct sigaction	s_action;
 
 	server_pid = getpid();
-	ft_printf("SERVER PID: %d\n", server_pid);
-
+	ft_printf("[SERVER]Started on pid (%d)\n", server_pid);
 	s_action.sa_sigaction = ft_signal_handler;
 	sigemptyset (&s_action.sa_mask);
 	s_action.sa_flags = SA_SIGINFO;
@@ -89,6 +88,6 @@ int	main(void)
 	sigaction(SIGUSR2, &s_action, NULL);
 
 	while (1)
-		sleep(100);
+		pause();
 	return (1);
 }
