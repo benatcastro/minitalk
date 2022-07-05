@@ -2,7 +2,7 @@ CC = gcc
 NAME = minitol
 CC_FLAGS = -Wall -Wextra -Werror
 SANITIZE = -fsanitize=address -g3
-VALGRIND = valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes
+VALGRIND = valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -g3
 SRC_DIR = srcs/
 OBJ_DIR = objs/
 LIBRARIE = ft_printf/libftprintf.a
@@ -11,6 +11,7 @@ INCLUDE = ft_printf/includes/
 
 SRC_FILES = client server
 SRC			=	$(addprefix $(SRC_DIR)), $(addsuffix .c, $(SRC_FILES))
+sum=$(shell expr $(1) + $(2))
 
 all : $(NAME)
 
@@ -28,8 +29,9 @@ client: $(NAME)
 sanitize:
 	@$(CC_FLAGS) += $(SANITIZE)
 
-valgrind:
-	@$(CC_FLAGS) += $(VALGRIND)
+valgrind: server client
+	@clear
+	@./execs/server $(VALGRIND) &
 
 start: client server
 	@clear

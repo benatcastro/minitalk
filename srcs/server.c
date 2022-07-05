@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:43:47 by bena              #+#    #+#             */
-/*   Updated: 2022/07/04 16:26:15 by bena             ###   ########.fr       */
+/*   Updated: 2022/07/05 02:22:24 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,38 +16,57 @@
 #include <unistd.h>
 #include <signal.h>
 #include "ft_printf.h"
+#include <string.h>
 
-static unsigned char	*ft_append_char(unsigned char *str, char c)
-{
-	unsigned char	*result;
-	unsigned int	len;
+// static unsigned char	*ft_append_char(unsigned char *str, unsigned char c)
+// {
+// 	unsigned char	*result;
+// 	int				i;
 
-	len = -1;
-	while (str[++len])
-		continue ;
-	ft_printf("APPEND (%c)", c);
-	result = malloc(len + 2);
-	ft_ustrlcpy(result, str, len);
-	ft_printf("RESULT %s\n", result);
-	free(str);
-	result[len + 1] = c;
-	result[len + 2] = '\0';
-	//ft_printf("Append result: (%s)\n", result);
-	return (result);
-}
+// 	ft_printf("STR (%s) C (%c))\n", str, c);
+// 	result = malloc(ft_ustrlen(str) + 2 * sizeof(unsigned char));
+// 	i = -1;
+// 	while (str[++i] && i < (int)ft_ustrlen(str))
+// 		result[i] = str[i];
+// 	ft_printf("I: (%d)\n", i);
+// 	result[i] = c;
+// 	result[i + 1] = 0;
+// 	//free(str);
+// 	return (result);
+
+// }
 
 static void	ft_print_message(pid_t pid, unsigned char c)
 {
-	unsigned char	*message;
+	unsigned char			*message;
+	static unsigned char	*aux;
+	static unsigned int		i;
 
-	message = malloc(0);
-
+	ft_printf("\n-----CHAR (%c)-----\n", c);
+	message = ft_calloc(i + 1, (sizeof(unsigned char)));
+	if (aux)
+		message = ft_ustrdup(aux);
 	if (c == 2)
 		ft_printf("[SERVER] Recieved message[");
-	else if (c == 3)
-		ft_printf("] from (%d)\n", pid);
+	else if (c == 4)
+	{
+		ft_printf("\n====TEST====\n");
+		ft_printf("%s] from (%d)\n", message, pid);
+		free(message);
+		aux = 0;
+		i = 0;
+	}
 	else
-		ft_append_char(message, c);
+	{
+		ft_printf("\ntest\n");
+		message[i] = c;
+		message[i + 1] = 0;
+		ft_printf("\nMESSAGE (%s)\n", message);
+		aux = ft_ustrdup(message);
+		ft_printf("\nAUX (%s)\n", aux);
+		free(message);
+		i++;
+	}
 
 }
 

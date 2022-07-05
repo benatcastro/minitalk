@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:30:26 by bena              #+#    #+#             */
-/*   Updated: 2022/07/04 14:01:37 by bena             ###   ########.fr       */
+/*   Updated: 2022/07/05 02:25:23 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,13 @@ static void	ft_send_string(pid_t pid, char *str)
 		ft_send(pid, str[i]);
 		i++;
 	}
-	ft_send(pid, 3);
+	i = 8;
+	while (i--)
+	{
+		kill(pid, SIGUSR1);
+		usleep(100);
+	}
+	//ft_send(pid, 3);
 }
 
 static void	ft_signal_handler(int signal, siginfo_t *data, void *ucontext)
