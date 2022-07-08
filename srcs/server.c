@@ -6,7 +6,7 @@
 /*   By: bena <bena@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 22:43:47 by bena              #+#    #+#             */
-/*   Updated: 2022/07/04 16:26:15 by bena             ###   ########.fr       */
+/*   Updated: 2022/07/08 18:13:32 by bena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,37 +17,17 @@
 #include <signal.h>
 #include "ft_printf.h"
 
-static unsigned char	*ft_append_char(unsigned char *str, char c)
-{
-	unsigned char	*result;
-	unsigned int	len;
-
-	len = -1;
-	while (str[++len])
-		continue ;
-	ft_printf("APPEND (%c)", c);
-	result = malloc(len + 2);
-	ft_ustrlcpy(result, str, len);
-	ft_printf("RESULT %s\n", result);
-	free(str);
-	result[len + 1] = c;
-	result[len + 2] = '\0';
-	//ft_printf("Append result: (%s)\n", result);
-	return (result);
-}
 
 static void	ft_print_message(pid_t pid, unsigned char c)
 {
-	unsigned char	*message;
 
-	message = malloc(0);
 
 	if (c == 2)
 		ft_printf("[SERVER] Recieved message[");
 	else if (c == 3)
 		ft_printf("] from (%d)\n", pid);
 	else
-		ft_append_char(message, c);
+		ft_printf("%c",c);
 
 }
 
